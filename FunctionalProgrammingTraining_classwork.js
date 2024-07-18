@@ -25,12 +25,12 @@ const dispatchEvent = (event) => {
   dataStore = EventReducer(dataStore, event);
 };
 
-// Log Actions function (curried)
+// Log Actions function 
 const logActions = (prefix = '') => (event) => {
   console.log(`${prefix} Event dispatched:`, event);
 };
 
-// Undo Action function (curried)
+// Undo Action function 
 let undoHistory = [];
 let redoHistory = [];
 const undoAction = (prefix = '') => () => {
@@ -44,7 +44,7 @@ const undoAction = (prefix = '') => () => {
   }
 };
 
-// Redo Action function (curried)
+// Redo Action function
 const redoAction = (prefix = '') => () => {
   if (redoHistory.length > 0) {
     const lastEvent = redoHistory.pop();
@@ -57,11 +57,11 @@ const redoAction = (prefix = '') => () => {
 };
 
 // Example usage
-dataStore = { items: [] }; // Initializing dataStore
+dataStore = { items: [] }; 
 
 // Define events
 const addItemEvent = { type: 'ADD_ITEM', payload: { name: 'Item 1' } };
-const removeItemEvent = { type: 'REMOVE_ITEM', payload: 0 }; // Remove the first item
+const removeItemEvent = { type: 'REMOVE_ITEM', payload: 0 };
 
 // Dispatch events
 dispatchEvent(addItemEvent);
@@ -79,5 +79,4 @@ undoAction('App')();
 undoAction('App')();
 redoAction('App')();
 
-// Access updated dataStore
-console.log(dataStore); // Output: { items: [{ name: 'Item 1' }] }
+console.log(dataStore); 

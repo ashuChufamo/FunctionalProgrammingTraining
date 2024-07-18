@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Functional Programming Tasks</title>
+</head>
+<body>
+  <h1>Functional Programming Tasks</h1>
+
+  <div>
+    <h2>Cart</h2>
+    <ul id="cart"></ul>
+  </div>
+
+  <div>
+    <h2>User</h2>
+    <p>Name: <span id="userName"></span></p>
+    <p>Logged In: <span id="isLoggedIn"></span></p>
+  </div>
+
+  <div>
+    <h2>Actions</h2>
+    <button id="addProductA">Add Product A to Cart</button>
+    <button id="addProductB">Add Product B to Cart</button>
+    <button id="removeProductA">Remove Product A from Cart</button>
+    <button id="login">Login</button>
+    <button id="logout">Logout</button>
+  </div>
+
+  <script>
+    // Initial dataStore
+    let dataStore = {
+      cart: [],
+      user: { name: "", isLoggedIn: false },
+      history: []
+    };
+
+    // Event Reducer
+    const EventReducer = (dataStore, event) => {
+      switch (event.type) {
+        case "ADD_TO_CART":
+          return {
+            ...dataStore,
+            cart: [...dataStore.cart, event.payload],
+            history: [...dataStore.history, event]
+          };
+        case "REMOVE_FROM_CART":
+          return {
+            ...dataStore,
+            cart: dataStore.cart.filter((item) => item !== event.payload),
+            history: [...dataStore.history, event]
+          };
+        case "LOGIN":
+          return {
+            ...dataStore,
+            user: { name: event.payload.name, isLoggedIn: true },
+            history: [...dataStore.history, event]
+          };
+        case "LOGOUT":
+          return {
+            ...dataStore,
+            user: { name: "", isLoggedIn: false },
+            history: [...dataStore.history, event]
+          };
+        default:
+          return dataStore;
+      }
+    };
+
+    // Dispatch Event
+    const dispatchEvent = (event) => {
+      dataStore = EventReducer(dataStore, event);
+      updateOutput();
+    };
+
+    // Update output
+    const updateOutput = () => {
+      const cartElement = document.getElementById("cart");
+      const userNameElement = document.getElementById("userName");
+      const isLoggedInElement = document.getElementById("isLoggedIn");
+
+      // Update cart
+      cartElement.innerHTML = "";
+      dataStore.cart.forEach((item) => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        cartElement.appendChild(li);
+      });
+
+      // Update user info
+      userNameElement.textContent = dataStore.user.name;
+      isLoggedInElement.textContent = dataStore.user.isLoggedIn.toString();
+    };
+
+    // Add event listeners to buttons
+    document.getElementById("addProductA").addEventListener("click", () => {
+      dispatchEvent({ type: "ADD_TO_CART", payload: "Product A" });
+    });
+
+    document.getElementById("addProductB").addEventListener("click", () => {
+      dispatchEvent({ type: "ADD_TO_CART", payload: "Product B" });
+    });
+
+    document.getElementById("removeProductA").addEventListener("click", () => {
+      dispatchEvent({ type: "REMOVE_FROM_CART", payload: "Product A" });
+    });
+
+    document.getElementById("login").addEventListener("click", () => {
+      dispatchEvent({ type: "LOGIN", payload: { name: "John Doe" } });
+    });
+
+    document.getElementById("logout").addEventListener("click", () => {
+      dispatchEvent({ type: "LOGOUT" });
+    });
+
+    // Example usage
+    dispatchEvent({ type: "ADD_TO_CART", payload: "Product A" });
+    dispatchEvent({ type: "ADD_TO_CART", payload: "Product B" });
+    dispatchEvent({ type: "REMOVE_FROM_CART", payload: "Product A" });
+    dispatchEvent({ type: "LOGIN", payload: { name: "John Doe" } });
+    dispatchEvent({ type: "LOGOUT" });
+  </script>
+</body>
+</html>
